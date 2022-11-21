@@ -5,36 +5,7 @@
 
 var API_KEY = "[API_KEY_GOES_HERE]";
 
-var preface = "I am a highly intelligent question answering bot. If you ask me a question that is rooted in truth, I will give you the answer. If you ask me a question that is nonsense, trickery, or has no clear answer, I will respond with 'Unknown'.\
-\
-Q: What is human life expectancy in the United States?\
-A: 78 years.\
-\
-Q: Who was president of the United States in 1955?\
-A: Dwight D. Eisenhower.\
-\
-Q: Which party did he belong to?\
-A: He belonged to the Republican Party.\
-\
-Q: What is the square root of banana?\
-A: Unknown\
-\
-Q: How does a telescope work?\
-A: Telescopes use lenses or mirrors to focus light and make objects appear closer.\
-\
-Q: Where were the 1992 Olympics held?\
-A: Barcelona, Spain.\
-\
-Q: How many squigs are in a bonk?\
-A: Unknown\
-\
-Q: What is the revenue of General Motors?\
-A: $150.8 billion.\
-\
-Q: What is the market cap of 3M?\
-A: $93.8 billion.\
-\
-";
+var preface = "";
 
 var NUM_TOKENS = 45;
 
@@ -53,7 +24,7 @@ function _callAPI(prompt) {
     "model": "text-davinci-002",
     'prompt': prompt,
     'max_tokens': NUM_TOKENS,
-    'temperature': 0,
+    'temperature': 0.7,
     "top_p": 1,
     "n": 1,
     "stream": false,
@@ -79,15 +50,16 @@ function _callAPI(prompt) {
 }
 
 function _parse_response(response) {
+  var parsed_fill = response
+  /**********
+  Function doesnt seem needed for content writer?
   var parsed_fill = response.slice(3);
-/**********
  * parses to remove 'A: ' from the returned answer style set in the preface;
  * 
- ***********/
   if (parsed_fill.charAt(parsed_fill.length - 1) == '.') {
     parsed_fill = parsed_fill.slice(0, -1);
   }
-
+ ***********/
   return parsed_fill;
 }
 
@@ -114,13 +86,13 @@ function gpt3fill() {
   var num_cols = range.getNumColumns();
 
   for (var x=2; x<num_cols + 1; x++) {
-    property_name = range.getCell(1, x).getValue();
+    article_style = range.getCell(1, x).getValue();
 
     for (var i=2; i<num_rows + 1; i++) {
-      entity_name = range.getCell(i,1).getValue();
+      topic = range.getCell(i,1).getValue();
       fill_cell = range.getCell(i, x);
 
-      result = get_x_of_y(property_name, entity_name);
+      result = get_x_of_y(article_style, topic);
 
       fill_cell.setValue([result]);
     }
