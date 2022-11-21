@@ -34,9 +34,9 @@ A: $150.8 billion.\
 Q: What is the market cap of 3M?\
 A: $93.8 billion.\
 \
-"
+";
 
-var NUM_TOKENS = 15;
+var NUM_TOKENS = 45;
 
 function onOpen() {
   var spreadsheet = SpreadsheetApp.getActive();
@@ -50,9 +50,15 @@ function onOpen() {
 
 function _callAPI(prompt) {
   var data = {
+    "model": "text-davinci-002",
     'prompt': prompt,
     'max_tokens': NUM_TOKENS,
     'temperature': 0,
+    "top_p": 1,
+    "n": 1,
+    "stream": false,
+    "logprobs": null,
+    "stop": "\n" 
   };
 
   var options = {
@@ -65,7 +71,7 @@ function _callAPI(prompt) {
   };
 
   response = UrlFetchApp.fetch(
-    'https://api.openai.com/v1/engines/davinci/completions',
+    'https://api.openai.com/v1/completions',
     options,
   );
 
@@ -73,8 +79,11 @@ function _callAPI(prompt) {
 }
 
 function _parse_response(response) {
-  var parsed_fill = response.slice(3, response.indexOf('Q: '));
-
+  var parsed_fill = response.slice(3);
+/**********
+ * parses to remove 'A: ' from the returned answer style set in the preface;
+ * 
+ ***********/
   if (parsed_fill.charAt(parsed_fill.length - 1) == '.') {
     parsed_fill = parsed_fill.slice(0, -1);
   }
