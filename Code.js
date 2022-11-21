@@ -27,9 +27,10 @@ function _callAPI(prompt) {
     'temperature': 0.7,
     "top_p": 1,
     "n": 1,
+    "echo": true,
     "stream": false,
     "logprobs": null,
-    "stop": "\n" 
+    /**"stop": "\n" **/
   };
 
   var options = {
@@ -49,28 +50,30 @@ function _callAPI(prompt) {
   return JSON.parse(response.getContentText())['choices'][0]['text']
 }
 
+/**********    Function doesnt seem needed for content writer?
 function _parse_response(response) {
-  var parsed_fill = response
-  /**********
-  Function doesnt seem needed for content writer?
   var parsed_fill = response.slice(3);
  * parses to remove 'A: ' from the returned answer style set in the preface;
  * 
   if (parsed_fill.charAt(parsed_fill.length - 1) == '.') {
-    parsed_fill = parsed_fill.slice(0, -1);
+  parsed_fill = parsed_fill.slice(0, -1);
   }
- ***********/
+ 
   return parsed_fill;
 }
+***********/
 
 function get_x_of_y(x, y) {
   var prompt = preface + "Q: What is the " + x + " of " + y + "?"
 
   var response = _callAPI(prompt);
 
-  var parsed_response = _parse_response(response);
-
-  return parsed_response;
+  /********** 
+   * var parsed_response = _parse_response(response);
+   * return parsed_response;
+   * ***********/
+   return response;
+ 
 }
 
 
